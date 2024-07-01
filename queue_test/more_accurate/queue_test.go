@@ -1,7 +1,8 @@
-package main
+package more_accurate
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -102,6 +103,52 @@ func BenchmarkSliceQueueInt64(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_, _ = queue.Pop()
 	}
+}
+
+func benchmarkLinkedListQueueString(b *testing.B, strLen int) {
+	queue := LinkedList[string]{}
+	str := strings.Repeat("a", strLen)
+	for i := 0; i < b.N; i++ {
+		queue.Push(str)
+	}
+	for i := 0; i < b.N; i++ {
+		_, _ = queue.Pop()
+	}
+}
+
+func benchmarkSliceQueueString(b *testing.B, strLen int) {
+	queue := SliceQueue[string]{}
+	str := strings.Repeat("a", strLen)
+	for i := 0; i < b.N; i++ {
+		queue.Push(str)
+	}
+	for i := 0; i < b.N; i++ {
+		_, _ = queue.Pop()
+	}
+}
+
+func BenchmarkLinkedListQueueString1024(b *testing.B) {
+	benchmarkLinkedListQueueString(b, 1024)
+}
+
+func BenchmarkSliceQueueString1024(b *testing.B) {
+	benchmarkSliceQueueString(b, 1024)
+}
+
+func BenchmarkLinkedListQueueString16384(b *testing.B) {
+	benchmarkLinkedListQueueString(b, 16384)
+}
+
+func BenchmarkSliceQueueString16384(b *testing.B) {
+	benchmarkSliceQueueString(b, 16384)
+}
+
+func BenchmarkLinkedListQueueString65536(b *testing.B) {
+	benchmarkLinkedListQueueString(b, 65536)
+}
+
+func BenchmarkSliceQueueString65536(b *testing.B) {
+	benchmarkSliceQueueString(b, 65536)
 }
 
 func main() {
