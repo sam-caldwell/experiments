@@ -64,7 +64,7 @@ func (q *SliceQueue[T]) Pop() (T, error) {
 	return data, nil
 }
 
-func BenchmarkLinkedListQueue(b *testing.B) {
+func BenchmarkLinkedListQueueInt(b *testing.B) {
 	queue := LinkedList[int]{}
 	for i := 0; i < b.N; i++ {
 		queue.Push(i)
@@ -74,9 +74,29 @@ func BenchmarkLinkedListQueue(b *testing.B) {
 	}
 }
 
-func BenchmarkSliceQueue(b *testing.B) {
+func BenchmarkSliceQueueInt(b *testing.B) {
 	queue := SliceQueue[int]{}
 	for i := 0; i < b.N; i++ {
+		queue.Push(i)
+	}
+	for i := 0; i < b.N; i++ {
+		_, _ = queue.Pop()
+	}
+}
+
+func BenchmarkLinkedListQueueInt64(b *testing.B) {
+	queue := LinkedList[int64]{}
+	for i := int64(0); i < int64(b.N); i++ {
+		queue.Push(i)
+	}
+	for i := 0; i < b.N; i++ {
+		_, _ = queue.Pop()
+	}
+}
+
+func BenchmarkSliceQueueInt64(b *testing.B) {
+	queue := SliceQueue[int64]{}
+	for i := int64(0); i < int64(b.N); i++ {
 		queue.Push(i)
 	}
 	for i := 0; i < b.N; i++ {
