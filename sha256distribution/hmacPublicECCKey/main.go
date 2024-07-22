@@ -2,13 +2,14 @@ package main
 
 import (
 	"crypto/ed25519"
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"math"
 )
 
-const numHashes = 100000000
+const numHashes = 1000000000
 
 func main() {
 	// Initialize counters for each byte value (0-255)
@@ -16,20 +17,22 @@ func main() {
 
 	// Loop to generate Ed25519 public keys and calculate hashes
 	for i := 0; i < numHashes; i++ {
-		// Generate an Ed25519 public/private key pair
-		_, publicKey, err := ed25519.GenerateKey(rand.Reader)
+		publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 		if err != nil {
 			fmt.Println("Error generating Ed25519 key:", err)
 			return
 		}
 
-		// Hash the public key with SHA256
-		hash := sha256.Sum256(publicKey)
+		// Calculate HMAC of the public key with SHA256
+		h := hmac.New(sha256.New, []byte(privateKey))
+		h.Write(publicKey)
+		hmacResult := h.Sum(nil)
 
-		// Count occurrences of each byte in the hash
-		for _, b := range hash {
+		// Analysis (optional)
+		for _, b := range hmacResult {
 			byteCount[b]++
 		}
+		fmt.Printf("progress: %4.2f%%\n", float64(100*i)/float64(numHashes))
 	}
 
 	// Calculate expected count per byte (assuming uniform distribution)
